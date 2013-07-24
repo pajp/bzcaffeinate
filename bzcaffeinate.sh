@@ -1,22 +1,27 @@
+#!/bin/bash
+
 bzrunning () 
 { 
     ps auxc | grep -q bztransmit
 }
 
+log()
+{
+    logger -t bzcaffeinate "$@"
+}
+
+log "starting up"
 while true; do
-    date
     if bzrunning; then
-	if kill -0 %1 2> /dev/null ; then
-	    echo "caffeinate already running" 
-	else
+	if ! kill -0 %1 2> /dev/null ; then
 	    caffeinate &
-	    echo "caffeinated"
+	    log "caffeinated"
 	fi
     else
 	if kill -0 %1 2> /dev/null ; then
-	    echo "no bztransmit running, killing caffeinate"
+	    log "no bztransmit running, killing caffeinate"
 	    kill %1
 	fi
     fi
-    sleep 600
+    sleep 10
 done
